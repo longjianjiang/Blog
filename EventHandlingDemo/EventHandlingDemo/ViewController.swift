@@ -16,8 +16,23 @@ class OrangeView: UIView {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        
+
         print("orange view click")
+    }
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        print("enter orange view")
+        let view = super.hitTest(point, with: event)
+        print("leave orange view")
+        print("=========================================")
+        return view
+    }
+
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        print("judge point inside orange view")
+        let isInside = super.point(inside: point, with: event)
+        print("point is inside orange view \(isInside)")
+        return isInside
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -37,8 +52,23 @@ class GreenView: UIView {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        
+
         print("green view click")
+    }
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        print("enter green view")
+        let view = super.hitTest(point, with: event)
+        print("leave green view")
+        print("=========================================")
+        return view
+    }
+
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        print("judge point inside green view")
+        let isInside = super.point(inside: point, with: event)
+        print("point is inside green view \(isInside)")
+        return isInside
     }
 }
 
@@ -54,8 +84,58 @@ class BlueView: UIView {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        
+
         print("blue view click")
+    }
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        print("enter blue view")
+        let view = super.hitTest(point, with: event)
+        print("leave blue view")
+        print("=========================================")
+        return view
+    }
+
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        print("judge point inside blue view")
+        let isInside = super.point(inside: point, with: event)
+        print("point is inside blue view \(isInside)")
+        return isInside
+    }
+}
+
+class PurpleView: UIView {
+    var targetView: UIView?
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.backgroundColor = UIColor.purple
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    /// touch purple view will pass touch event to orange view
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+
+        print("purple view click")
+    }
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        print("enter purple view")
+        let view = super.hitTest(point, with: event)
+        print("leave purple view")
+        print("=========================================")
+        return targetView
+    }
+
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        print("judge point inside purple view")
+        let isInside = super.point(inside: point, with: event)
+        print("point is inside purple view \(isInside)")
+        return isInside
     }
 }
 
@@ -65,6 +145,7 @@ class ViewController: UIViewController {
     var orangeView = OrangeView()
     var greenView = GreenView()
     var blueView = BlueView()
+    var purpleView = PurpleView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,28 +167,47 @@ class ViewController: UIViewController {
         */
         
         
-        
+        purpleView.targetView = orangeView
+
         view.addSubview(orangeView)
         view.addSubview(greenView)
         greenView.addSubview(blueView)
-        
+        greenView.addSubview(purpleView)
+
+        let guide = view.safeAreaLayoutGuide
+
         orangeView.translatesAutoresizingMaskIntoConstraints = false
-        orangeView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        orangeView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        orangeView.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        orangeView.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        
+        NSLayoutConstraint.activate([
+            orangeView.topAnchor.constraint(equalTo: guide.topAnchor),
+            orangeView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            orangeView.widthAnchor.constraint(equalToConstant: 100),
+            orangeView.heightAnchor.constraint(equalToConstant: 100)
+        ])
+
         greenView.translatesAutoresizingMaskIntoConstraints = false
-        greenView.topAnchor.constraint(equalTo: orangeView.bottomAnchor, constant: 20).isActive = true
-        greenView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        greenView.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        greenView.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        
+        NSLayoutConstraint.activate([
+            greenView.topAnchor.constraint(equalTo: orangeView.bottomAnchor, constant: 20),
+            greenView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            greenView.widthAnchor.constraint(equalToConstant: 200),
+            greenView.heightAnchor.constraint(equalToConstant: 100)
+        ])
+
         blueView.translatesAutoresizingMaskIntoConstraints = false
-        blueView.topAnchor.constraint(equalTo: greenView.topAnchor, constant: 20).isActive = true
-        blueView.leadingAnchor.constraint(equalTo: greenView.leadingAnchor, constant: 40)
-        blueView.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        blueView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        NSLayoutConstraint.activate([
+            blueView.topAnchor.constraint(equalTo: greenView.topAnchor, constant: 20),
+            blueView.leadingAnchor.constraint(equalTo: greenView.leadingAnchor, constant: 40),
+            blueView.widthAnchor.constraint(equalToConstant: 50),
+            blueView.heightAnchor.constraint(equalToConstant: 50)
+        ])
+
+        purpleView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            purpleView.topAnchor.constraint(equalTo: greenView.topAnchor, constant: 20),
+            purpleView.trailingAnchor.constraint(equalTo: greenView.trailingAnchor, constant: -40),
+            purpleView.widthAnchor.constraint(equalToConstant: 50),
+            purpleView.heightAnchor.constraint(equalToConstant: 50)
+        ])
+
     }
 
 //    override var next: UIResponder? {
